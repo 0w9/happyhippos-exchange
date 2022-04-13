@@ -18,9 +18,21 @@ async function run() {
     const connection = new Connection(clusterApiUrl('mainnet-beta'));
     const response =  await connection.getParsedTokenAccountsByOwner(new PublicKey(wallet), {programId: new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA")}, "confirmed");
 
-    for(let nft of response.value) {
-      console.log(wlist.includes("J83ENggD6iuJYyjnZEdAbmSFBdSH5qAtFWbxbgDv5xsq"))
+    for(let i=0; i < response.value.length; i++) {
+      if(wlist.includes(response.value[i].account.data.parsed.info.mint)) {
+        user_mints.push(response.value[i].account.data.parsed.info.mint);
       }
+    }
+
+    const button = document.getElementById('btnConnect');
+
+    button!.style.display = 'none';
+
+    for(let mint of user_mints) {
+      let btn = document.createElement("button");
+      btn.innerHTML = mint;
+      document.body.appendChild(btn);
+    }
   }
 }
 
@@ -29,7 +41,7 @@ export default class Main extends Component<Props, State> {
 
   render() {
     return (
-      <button onClick={run}>Click me</button> 
+      <button id="btnConnect" onClick={run}>Connect</button> 
     )
   }
 }
